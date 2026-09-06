@@ -3,14 +3,18 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#EFEAE1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="よんぽけ帳" />
 <title>よんぽけ帳</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
   :root{
@@ -41,7 +45,7 @@
   }
 
   body{
-    font-family:'Zen Kaku Gothic New','Hiragino Sans',sans-serif;
+    font-family:'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
     color:var(--ink);
     display:flex;
     justify-content:center;
@@ -49,7 +53,7 @@
   }
 
   h1,h2,h3{
-    font-family:'Shippori Mincho',serif;
+    font-family:'Shippori Mincho', serif;
     margin:0;
     font-weight:700;
   }
@@ -120,7 +124,7 @@
   }
 
   .gauge-figure .amt{
-    font-family:'Shippori Mincho',serif;
+    font-family:'Shippori Mincho', serif;
     font-size:42px;
     font-weight:700;
     line-height:1;
@@ -151,7 +155,7 @@
     left:0;
     bottom:0;
     background:var(--safe);
-    transition:width .35s ease,background .35s ease;
+    transition:width .35s ease, background .35s ease;
     width:0%;
   }
 
@@ -213,7 +217,7 @@
   }
 
   .pocket .pbal{
-    font-family:'Shippori Mincho',serif;
+    font-family:'Shippori Mincho', serif;
     font-size:19px;
     font-weight:700;
     font-variant-numeric:tabular-nums;
@@ -356,7 +360,7 @@
     background:var(--paper);
     color:var(--ink);
     padding:12px 0;
-    font-family:'Zen Kaku Gothic New',sans-serif;
+    font-family:'Zen Kaku Gothic New', sans-serif;
     font-size:14px;
     cursor:pointer;
   }
@@ -374,7 +378,7 @@
   input[type=number],
   input[type=text],
   input[type=date]{
-    font-family:'Zen Kaku Gothic New',sans-serif;
+    font-family:'Zen Kaku Gothic New', sans-serif;
     font-size:15px;
     padding:11px 10px;
     border:1px solid var(--line);
@@ -418,7 +422,7 @@
     border:none;
     padding:14px;
     font-size:15px;
-    font-family:'Zen Kaku Gothic New',sans-serif;
+    font-family:'Zen Kaku Gothic New', sans-serif;
     letter-spacing:0.05em;
     cursor:pointer;
     margin-top:4px;
@@ -450,7 +454,7 @@
     align-items:center;
     cursor:pointer;
     color:var(--ink);
-    font-family:'Zen Kaku Gothic New',sans-serif;
+    font-family:'Zen Kaku Gothic New', sans-serif;
     font-size:13px;
   }
 
@@ -518,24 +522,28 @@
     margin-top:6px;
   }
 
-  .sync-status{
+  .sync-note{
     position:fixed;
-    top:7px;
     left:50%;
+    bottom:76px;
     transform:translateX(-50%);
     z-index:100;
-    font-size:10px;
-    padding:3px 8px;
-    border:1px solid var(--line);
-    background:var(--paper);
-    color:var(--ink-soft);
-    opacity:.9;
+    background:var(--ink);
+    color:var(--paper);
+    padding:7px 12px;
+    font-size:11px;
+    opacity:0;
     pointer-events:none;
+    transition:opacity .2s;
+    white-space:nowrap;
   }
 
-  .sync-status.error{
-    color:var(--danger);
-    border-color:var(--danger);
+  .sync-note.show{
+    opacity:1;
+  }
+
+  .sync-note.error{
+    background:var(--danger);
   }
 
   .bottom-nav{
@@ -561,7 +569,7 @@
     color:var(--ink-soft);
     padding:6px 0;
     cursor:pointer;
-    font-family:'Zen Kaku Gothic New',sans-serif;
+    font-family:'Zen Kaku Gothic New', sans-serif;
     font-size:10.5px;
   }
 
@@ -686,8 +694,6 @@
 
 <div class="phone-shell">
 
-  <div class="sync-status" id="syncStatus">接続中...</div>
-
   <div class="topbar">
     <h1>よんぽけ帳</h1>
     <span class="date" id="todayLabel"></span>
@@ -699,7 +705,6 @@
     <section class="tab-panel active" id="tab-home">
 
       <div class="gauge-block">
-
         <div class="gauge-label">今日、まだ使える額</div>
 
         <div class="gauge-figure" id="gaugeFigure">
@@ -719,7 +724,6 @@
         <span class="budget-edit" id="budgetEditToggle">
           目標額を変更する
         </span>
-
       </div>
 
       <div class="pockets" id="pockets"></div>
@@ -746,40 +750,20 @@
         <div class="row">
 
           <div class="toggle" id="typeToggle">
-            <button type="button" data-type="expense" class="active">
-              支出
-            </button>
-
-            <button type="button" data-type="income">
-              収入
-            </button>
+            <button type="button" data-type="expense" class="active">支出</button>
+            <button type="button" data-type="income">収入</button>
           </div>
 
           <input type="date" id="entryDate" required />
 
         </div>
 
-
         <div class="acct-select" id="acctSelect">
-
-          <button type="button" class="acct-btn active" data-acct="wallet">
-            財布
-          </button>
-
-          <button type="button" class="acct-btn" data-acct="bank">
-            銀行
-          </button>
-
-          <button type="button" class="acct-btn" data-acct="points">
-            ポイント
-          </button>
-
-          <button type="button" class="acct-btn" data-acct="card">
-            カード
-          </button>
-
+          <button type="button" class="acct-btn active" data-acct="wallet">財布</button>
+          <button type="button" class="acct-btn" data-acct="bank">銀行</button>
+          <button type="button" class="acct-btn" data-acct="points">ポイント</button>
+          <button type="button" class="acct-btn" data-acct="card">カード</button>
         </div>
-
 
         <input
           type="number"
@@ -833,7 +817,6 @@
         <h2>設定</h2>
       </div>
 
-
       <div class="settings-block">
 
         <div class="gauge-label">
@@ -865,10 +848,7 @@
 
       <div class="settings-block">
 
-        <div
-          class="gauge-label"
-          style="margin-bottom:10px;"
-        >
+        <div class="gauge-label" style="margin-bottom:10px;">
           残高を直接調整する
         </div>
 
@@ -892,34 +872,22 @@
           <input type="number" id="balCard" step="1" />
         </div>
 
-        <button
-          type="button"
-          class="submit-btn"
-          id="saveBalBtn"
-        >
+        <button type="button" class="submit-btn" id="saveBalBtn">
           残高を保存
         </button>
 
       </div>
-
 
       <div class="save-note" id="saveNote"></div>
 
 
       <div class="settings-block">
 
-        <div
-          class="gauge-label"
-          style="margin-bottom:10px;"
-        >
+        <div class="gauge-label" style="margin-bottom:10px;">
           データを消す
         </div>
 
-        <button
-          type="button"
-          class="reset-btn"
-          id="resetBtn"
-        >
+        <button type="button" class="reset-btn" id="resetBtn">
           すべての記録をリセット
         </button>
 
@@ -930,21 +898,14 @@
   </main>
 
 
-  <button
-    class="fab"
-    id="fabAdd"
-    title="記録を追加"
-  >
+  <button class="fab" id="fabAdd" title="記録を追加">
     ＋
   </button>
 
 
   <nav class="bottom-nav">
 
-    <button
-      class="nav-btn active"
-      data-tab="home"
-    >
+    <button class="nav-btn active" data-tab="home">
       <svg viewBox="0 0 24 24">
         <path d="M4 11.5 12 4l8 7.5"/>
         <path d="M6 10v9h5v-5h2v5h5v-9"/>
@@ -952,11 +913,7 @@
       ホーム
     </button>
 
-
-    <button
-      class="nav-btn"
-      data-tab="input"
-    >
+    <button class="nav-btn" data-tab="input">
       <svg viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="8.5"/>
         <path d="M12 8v8M8 12h8"/>
@@ -964,11 +921,7 @@
       入力
     </button>
 
-
-    <button
-      class="nav-btn"
-      data-tab="history"
-    >
+    <button class="nav-btn" data-tab="history">
       <svg viewBox="0 0 24 24">
         <rect x="5" y="3.5" width="14" height="17" rx="0.5"/>
         <path d="M8 8h8M8 11.5h8M8 15h5"/>
@@ -976,11 +929,7 @@
       履歴
     </button>
 
-
-    <button
-      class="nav-btn"
-      data-tab="settings"
-    >
+    <button class="nav-btn" data-tab="settings">
       <svg viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="3"/>
         <path d="M12 3.5v2.6M12 17.9v2.6M4.9 6.9l1.9 1.9M17.2 15.2l1.9 1.9M3.5 12h2.6M17.9 12h2.6M4.9 17.1l1.9-1.9M17.2 8.8l1.9-1.9"/>
@@ -992,10 +941,7 @@
 
 
   <!-- ONBOARDING -->
-  <div
-    class="onboarding-overlay hidden"
-    id="onboarding"
-  >
+  <div class="onboarding-overlay hidden" id="onboarding">
 
     <h2>
       はじめまして。<br>
@@ -1006,58 +952,31 @@
       財布・銀行・ポイント・カードそれぞれの「今の状態」を入れると、ここからの出入りを正しく計算できます。わからなければ0円のまま後で調整もできます。
     </p>
 
-
     <div class="ob-row wallet">
       <span class="tag">財布</span>
-      <input
-        type="number"
-        id="obWallet"
-        placeholder="0"
-        step="1"
-      />
+      <input type="number" id="obWallet" placeholder="0" step="1" />
     </div>
-
 
     <div class="ob-row bank">
       <span class="tag">銀行</span>
-      <input
-        type="number"
-        id="obBank"
-        placeholder="0"
-        step="1"
-      />
+      <input type="number" id="obBank" placeholder="0" step="1" />
     </div>
-
 
     <div class="ob-row points">
       <span class="tag">ポイント</span>
-      <input
-        type="number"
-        id="obPoints"
-        placeholder="0"
-        step="1"
-      />
+      <input type="number" id="obPoints" placeholder="0" step="1" />
     </div>
-
 
     <div class="ob-row card">
       <span class="tag">カード未払い</span>
-      <input
-        type="number"
-        id="obCard"
-        placeholder="0"
-        step="1"
-      />
+      <input type="number" id="obCard" placeholder="0" step="1" />
     </div>
-
 
     <div
       class="ob-row"
       style="grid-template-columns:70px 1fr;"
     >
-      <span
-        style="font-size:12px;color:var(--ink-soft);"
-      >
+      <span style="font-size:12px;color:var(--ink-soft);">
         一日の目標
       </span>
 
@@ -1068,7 +987,6 @@
         step="100"
       />
     </div>
-
 
     <div class="ob-actions">
 
@@ -1095,8 +1013,35 @@
 </div>
 
 
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
 <script>
 (function(){
+
+  /* =========================================================
+     Supabase設定
+     ========================================================= */
+
+  const SUPABASE_URL =
+    "https://ogxpilzwyihpigpffgcq.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_P-FwI0_H9oAl7VyTG8oLoQ_651FpIYz";
+
+  const KAKEIBO_ID = "shared";
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  /* =========================================================
+     基本設定
+     ========================================================= */
 
   const ACCTS = {
     wallet:{
@@ -1121,85 +1066,6 @@
   };
 
 
-  /*
-   * ==============================
-   * Supabase設定
-   * ==============================
-   */
-
-  const SUPABASE_URL =
-    "https://ogxpilzwyihpigpffgcq.supabase.co";
-
-  const SUPABASE_KEY =
-    "sb_publishable_P-FwI0_H9oAl7VyTG8oLoQ_651FpIYz";
-
-  const KAKEIBO_ID = "shared";
-
-
-  const supabase =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-
-  /*
-   * ==============================
-   * 状態
-   * ==============================
-   */
-
-  let state = {
-    settings:{
-      dailyBudget:3000
-    },
-
-    accounts:{
-      wallet:0,
-      bank:0,
-      points:0,
-      card:0
-    },
-
-    transactions:[],
-
-    onboarded:false
-  };
-
-
-  let formType = 'expense';
-  let formAcct = 'wallet';
-
-
-  /*
-   * ==============================
-   * 同期表示
-   * ==============================
-   */
-
-  function setSyncStatus(message, isError=false){
-
-    const el =
-      document.getElementById('syncStatus');
-
-    if(!el) return;
-
-    el.textContent = message;
-
-    el.classList.toggle(
-      'error',
-      !!isError
-    );
-
-  }
-
-
-  /*
-   * ==============================
-   * 日付・表示
-   * ==============================
-   */
-
   const todayStr = () => {
 
     const d = new Date();
@@ -1215,11 +1081,10 @@
       dateStr.split('-').map(Number);
 
     const dt =
-      new Date(y,m-1,d);
+      new Date(y, m-1, d);
 
     const wd =
-      ['日','月','火','水','木','金','土']
-      [dt.getDay()];
+      ['日','月','火','水','木','金','土'][dt.getDay()];
 
     return `${m}月${d}日（${wd}）`;
 
@@ -1228,26 +1093,258 @@
 
   const yen = (n) =>
     (n < 0 ? '-' : '') +
-    Math.abs(Math.round(n))
-      .toLocaleString('ja-JP');
+    Math.abs(Math.round(n)).toLocaleString('ja-JP');
 
 
-  /*
-   * ==============================
-   * Supabaseから読み込み
-   * ==============================
-   */
+  let state = {
 
-  async function loadAll(){
+    settings:{
+      dailyBudget:3000
+    },
 
-    setSyncStatus('同期中...');
+    accounts:{
+      wallet:0,
+      bank:0,
+      points:0,
+      card:0
+    },
+
+    transactions:[],
+
+    onboarded:false
+
+  };
+
+
+  let formType = 'expense';
+
+  let formAcct = 'wallet';
+
+  let loadingFromSupabase = false;
+
+  let savingToSupabase = false;
+
+
+  /* =========================================================
+     同期表示
+     ========================================================= */
+
+  function showSyncNote(message, isError = false){
+
+    const el =
+      document.getElementById('syncNote');
+
+    if(!el) return;
+
+    el.textContent = message;
+
+    el.classList.toggle('error', isError);
+
+    el.classList.add('show');
+
+    clearTimeout(showSyncNote.timer);
+
+    showSyncNote.timer =
+      setTimeout(() => {
+
+        el.classList.remove('show');
+
+      }, 1800);
+
+  }
+
+
+  /* =========================================================
+     stateを正常化
+     ========================================================= */
+
+  function normalizeState(data){
+
+    if(!data || typeof data !== 'object'){
+      return;
+    }
+
+    if(data.settings &&
+       typeof data.settings === 'object'){
+
+      state.settings = {
+        dailyBudget:
+          Number(data.settings.dailyBudget) || 0
+      };
+
+    }
+
+    if(data.accounts &&
+       typeof data.accounts === 'object'){
+
+      state.accounts = {
+
+        wallet:
+          Number(data.accounts.wallet) || 0,
+
+        bank:
+          Number(data.accounts.bank) || 0,
+
+        points:
+          Number(data.accounts.points) || 0,
+
+        card:
+          Number(data.accounts.card) || 0
+
+      };
+
+    }
+
+    if(Array.isArray(data.transactions)){
+
+      state.transactions =
+        data.transactions.map(t => ({
+
+          id:t.id,
+
+          date:t.date,
+
+          type:t.type === 'income'
+            ? 'income'
+            : 'expense',
+
+          account:
+            ACCTS[t.account]
+              ? t.account
+              : 'wallet',
+
+          amount:
+            Number(t.amount) || 0,
+
+          memo:
+            typeof t.memo === 'string'
+              ? t.memo
+              : '',
+
+          createdAt:
+            Number(t.createdAt) ||
+            Date.now()
+
+        }));
+
+    }else{
+
+      state.transactions = [];
+
+    }
+
+    state.onboarded =
+      !!data.onboarded;
+
+  }
+
+
+  /* =========================================================
+     localStorageから旧データを取得
+     ========================================================= */
+
+  function loadLocalStorage(){
+
+    let hasData = false;
 
     try{
 
-      const { data, error } =
-        await supabase
+      const v =
+        localStorage.getItem(
+          'kakeibo:settings'
+        );
+
+      if(v){
+
+        state.settings =
+          JSON.parse(v);
+
+        hasData = true;
+
+      }
+
+    }catch(e){}
+
+
+    try{
+
+      const v =
+        localStorage.getItem(
+          'kakeibo:accounts'
+        );
+
+      if(v){
+
+        state.accounts =
+          JSON.parse(v);
+
+        hasData = true;
+
+      }
+
+    }catch(e){}
+
+
+    try{
+
+      const v =
+        localStorage.getItem(
+          'kakeibo:transactions'
+        );
+
+      if(v){
+
+        state.transactions =
+          JSON.parse(v);
+
+        hasData = true;
+
+      }
+
+    }catch(e){}
+
+
+    try{
+
+      const v =
+        localStorage.getItem(
+          'kakeibo:onboarded'
+        );
+
+      if(v){
+
+        state.onboarded =
+          JSON.parse(v);
+
+        hasData = true;
+
+      }
+
+    }catch(e){}
+
+
+    return hasData;
+
+  }
+
+
+  /* =========================================================
+     Supabaseから読み込み
+     ========================================================= */
+
+  async function loadAll(){
+
+    loadingFromSupabase = true;
+
+    try{
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
           .from('kakeibo_state')
-          .select('data')
+          .select('id,data,updated_at')
           .eq('id', KAKEIBO_ID)
           .maybeSingle();
 
@@ -1259,203 +1356,110 @@
           error
         );
 
-        setSyncStatus(
-          '同期エラー',
-          true
-        );
-
-        return;
+        throw error;
 
       }
 
 
-      /*
-       * Supabaseに既存データがある場合
-       */
+      /* ---------------------------------------------
+         既に共有データが存在する場合
+         --------------------------------------------- */
 
-      if(data && data.data){
+      if(data){
 
-        const remote =
-          data.data;
+        normalizeState(data.data);
 
-        state.settings =
-          remote.settings ||
-          {
-            dailyBudget:3000
-          };
-
-
-        state.accounts =
-          remote.accounts ||
-          {
-            wallet:0,
-            bank:0,
-            points:0,
-            card:0
-          };
-
-
-        state.transactions =
-          Array.isArray(
-            remote.transactions
-          )
-            ? remote.transactions
-            : [];
-
-
-        state.onboarded =
-          !!remote.onboarded;
-
-
-        setSyncStatus(
-          '同期済み'
-        );
-
-        return;
+        return true;
 
       }
 
 
-      /*
-       * Supabaseが空の場合
-       *
-       * この端末の既存localStorageを
-       * 初回データとして移行する
-       */
+      /* ---------------------------------------------
+         共有データがまだ無い場合
 
-      try{
+         今の端末にlocalStorageのデータがあれば
+         それを初期データとしてSupabaseへ移行
+         --------------------------------------------- */
 
-        const v =
-          localStorage.getItem(
-            'kakeibo:settings'
-          );
-
-        if(v){
-
-          state.settings =
-            JSON.parse(v);
-
-        }
-
-      }catch(e){}
+      const localHasData =
+        loadLocalStorage();
 
 
-      try{
+      if(localHasData){
 
-        const v =
-          localStorage.getItem(
-            'kakeibo:accounts'
-          );
+        await saveAll();
 
-        if(v){
+      }
 
-          state.accounts =
-            JSON.parse(v);
-
-        }
-
-      }catch(e){}
+      return true;
 
 
-      try{
+    }catch(error){
 
-        const v =
-          localStorage.getItem(
-            'kakeibo:transactions'
-          );
+      console.error(error);
 
-        if(v){
-
-          state.transactions =
-            JSON.parse(v);
-
-        }
-
-      }catch(e){}
-
-
-      try{
-
-        const v =
-          localStorage.getItem(
-            'kakeibo:onboarded'
-          );
-
-        if(v){
-
-          state.onboarded =
-            JSON.parse(v);
-
-        }
-
-      }catch(e){}
-
-
-      /*
-       * 初回移行
-       */
-
-      await saveAll();
-
-
-    }catch(e){
-
-      console.error(
-        'Supabase接続エラー:',
-        e
-      );
-
-      setSyncStatus(
-        '接続エラー',
+      showSyncNote(
+        '共有データの読み込みに失敗',
         true
       );
+
+      return false;
+
+
+    }finally{
+
+      loadingFromSupabase = false;
 
     }
 
   }
 
 
-  /*
-   * ==============================
-   * Supabaseへ保存
-   * ==============================
-   */
+  /* =========================================================
+     Supabaseへ保存
+     ========================================================= */
 
   async function saveAll(){
 
-    setSyncStatus('保存中...');
+    if(loadingFromSupabase){
+      return false;
+    }
 
+    if(savingToSupabase){
+      return false;
+    }
 
-    const payload = {
-
-      id:KAKEIBO_ID,
-
-      data:{
-
-        settings:
-          state.settings,
-
-        accounts:
-          state.accounts,
-
-        transactions:
-          state.transactions,
-
-        onboarded:
-          state.onboarded
-
-      },
-
-      updated_at:
-        new Date().toISOString()
-
-    };
+    savingToSupabase = true;
 
 
     try{
 
-      const { error } =
-        await supabase
+      const payload = {
+
+        id:KAKEIBO_ID,
+
+        data:{
+
+          settings:state.settings,
+
+          accounts:state.accounts,
+
+          transactions:state.transactions,
+
+          onboarded:state.onboarded
+
+        },
+
+        updated_at:
+          new Date().toISOString()
+
+      };
+
+
+      const {
+        error
+      } =
+        await supabaseClient
           .from('kakeibo_state')
           .upsert(
             payload,
@@ -1472,57 +1476,34 @@
           error
         );
 
-        setSyncStatus(
-          '保存エラー',
-          true
-        );
-
-        alert(
-          'データの共有保存に失敗しました。\n\n' +
-          error.message
-        );
-
-        return false;
+        throw error;
 
       }
 
 
-      setSyncStatus(
-        '同期済み'
-      );
-
       return true;
 
 
-    }catch(e){
+    }catch(error){
 
-      console.error(
-        'Supabase保存例外:',
-        e
-      );
+      console.error(error);
 
-      setSyncStatus(
-        '保存エラー',
+      showSyncNote(
+        'Supabaseへの保存に失敗',
         true
       );
 
-      alert(
-        'Supabaseへの保存中にエラーが発生しました。\n\n' +
-        e.message
-      );
-
       return false;
+
+
+    }finally{
+
+      savingToSupabase = false;
 
     }
 
   }
 
-
-  /*
-   * ==============================
-   * 既存コードとの互換用
-   * ==============================
-   */
 
   async function saveSettings(){
 
@@ -1554,11 +1535,87 @@
   }
 
 
-  /*
-   * ==============================
-   * 残高計算
-   * ==============================
-   */
+  /* =========================================================
+     他のスマホの変更を取得
+     ========================================================= */
+
+  async function refreshFromSupabase(){
+
+    if(
+      loadingFromSupabase ||
+      savingToSupabase
+    ){
+
+      return;
+
+    }
+
+
+    try{
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from('kakeibo_state')
+          .select('data,updated_at')
+          .eq('id', KAKEIBO_ID)
+          .maybeSingle();
+
+
+      if(error){
+
+        console.error(
+          '共有データ更新確認エラー:',
+          error
+        );
+
+        return;
+
+      }
+
+
+      if(!data || !data.data){
+
+        return;
+
+      }
+
+
+      const before =
+        JSON.stringify(state);
+
+
+      normalizeState(data.data);
+
+
+      const after =
+        JSON.stringify(state);
+
+
+      if(before !== after){
+
+        render();
+
+        showSyncNote(
+          '共有データを更新しました'
+        );
+
+      }
+
+    }catch(error){
+
+      console.error(error);
+
+    }
+
+  }
+
+
+  /* =========================================================
+     残高計算
+     ========================================================= */
 
   function getBalances(){
 
@@ -1597,23 +1654,24 @@
   }
 
 
-  /*
-   * ==============================
-   * 今日の支出
-   * ==============================
-   */
+  /* =========================================================
+     今日の支出
+     ========================================================= */
 
   function todaysExpenseTotal(){
 
     const today =
       todayStr();
 
+
     return state.transactions
+
       .filter(
         t =>
           t.date === today &&
           t.type === 'expense'
       )
+
       .reduce(
         (s,t) =>
           s + t.amount,
@@ -1623,58 +1681,9 @@
   }
 
 
-  /*
-   * ==============================
-   * 履歴行
-   * ==============================
-   */
-
-  function rowHtml(t){
-
-    const a =
-      ACCTS[t.account];
-
-    const sign =
-      t.type === 'income'
-        ? '+'
-        : '-';
-
-
-    return `
-      <div class="ledger-row">
-
-        <span class="tag ${a.class}">
-          ${a.label}
-        </span>
-
-        <span class="memo">
-          ${
-            t.memo
-              ? escapeHtml(t.memo)
-              : (
-                t.type === 'income'
-                  ? '収入'
-                  : '支出'
-              )
-          }
-        </span>
-
-        <span class="amount ${t.type}">
-          ${sign}${yen(t.amount)}
-        </span>
-
-        <button
-          class="del"
-          data-del="${t.id}"
-        >
-          削除
-        </button>
-
-      </div>
-    `;
-
-  }
-
+  /* =========================================================
+     HTMLエスケープ
+     ========================================================= */
 
   function escapeHtml(s){
 
@@ -1688,11 +1697,59 @@
   }
 
 
-  /*
-   * ==============================
-   * 描画
-   * ==============================
-   */
+  /* =========================================================
+     明細HTML
+     ========================================================= */
+
+  function rowHtml(t){
+
+    const a =
+      ACCTS[t.account] ||
+      ACCTS.wallet;
+
+    const sign =
+      t.type === 'income'
+        ? '+'
+        : '-';
+
+
+    return `<div class="ledger-row">
+
+      <span class="tag ${a.class}">
+        ${a.label}
+      </span>
+
+      <span class="memo">
+        ${
+          t.memo
+            ? escapeHtml(t.memo)
+            : (
+                t.type === 'income'
+                  ? '収入'
+                  : '支出'
+              )
+        }
+      </span>
+
+      <span class="amount ${t.type}">
+        ${sign}${yen(t.amount)}
+      </span>
+
+      <button
+        class="del"
+        data-del="${t.id}"
+      >
+        削除
+      </button>
+
+    </div>`;
+
+  }
+
+
+  /* =========================================================
+     画面描画
+     ========================================================= */
 
   function render(){
 
@@ -1702,9 +1759,7 @@
       fmtDateLabel(todayStr());
 
 
-    /*
-     * ゲージ
-     */
+    /* gauge */
 
     const spent =
       todaysExpenseTotal();
@@ -1766,6 +1821,7 @@
       'danger'
     );
 
+
     fig.classList.remove(
       'over'
     );
@@ -1790,9 +1846,7 @@
     }
 
 
-    /*
-     * ポケット
-     */
+    /* pockets */
 
     const bal =
       getBalances();
@@ -1802,6 +1856,7 @@
       'pockets'
     ).innerHTML =
       Object.keys(ACCTS)
+
         .map(k => {
 
           const a =
@@ -1813,33 +1868,30 @@
               : '';
 
 
-          return `
-            <div class="pocket ${a.class}">
+          return `<div class="pocket ${a.class}">
 
-              <div class="pname">
-                ${a.label}
-              </div>
-
-              <div class="pbal">
-                ${yen(bal[k])}円
-              </div>
-
-              ${
-                note
-                  ? `<div class="pnote">${note}</div>`
-                  : ''
-              }
-
+            <div class="pname">
+              ${a.label}
             </div>
-          `;
+
+            <div class="pbal">
+              ${yen(bal[k])}円
+            </div>
+
+            ${
+              note
+                ? `<div class="pnote">${note}</div>`
+                : ''
+            }
+
+          </div>`;
 
         })
+
         .join('');
 
 
-    /*
-     * 今日の記録
-     */
+    /* today's ledger */
 
     const today =
       todayStr();
@@ -1847,10 +1899,12 @@
 
     const todayTx =
       state.transactions
+
         .filter(
           t =>
             t.date === today
         )
+
         .sort(
           (a,b) =>
             b.createdAt -
@@ -1860,14 +1914,10 @@
 
     const todayHtml =
       todayTx.length
-        ? todayTx
-            .map(rowHtml)
-            .join('')
-        : `
-          <div class="empty">
-            まだ記録がありません
-          </div>
-        `;
+        ? todayTx.map(rowHtml).join('')
+        : `<div class="empty">
+             まだ記録がありません
+           </div>`;
 
 
     document.getElementById(
@@ -1882,24 +1932,25 @@
       todayHtml;
 
 
-    /*
-     * 過去の記録
-     */
+    /* history */
 
     const dates =
       [
         ...new Set(
           state.transactions
+
             .filter(
               t =>
                 t.date !== today
             )
+
             .map(
               t =>
                 t.date
             )
         )
       ]
+
       .sort(
         (a,b) =>
           b.localeCompare(a)
@@ -1914,100 +1965,96 @@
 
     if(dates.length === 0){
 
-      historyList.innerHTML = `
-        <div class="empty">
+      historyList.innerHTML =
+        `<div class="empty">
           過去の記録はまだありません
-        </div>
-      `;
+        </div>`;
 
     }else{
 
       historyList.innerHTML =
-        dates
-          .map(d => {
+        dates.map(d => {
 
-            const txs =
-              state.transactions
-                .filter(
-                  t =>
-                    t.date === d
-                )
-                .sort(
-                  (a,b) =>
-                    b.createdAt -
-                    a.createdAt
-                );
+          const txs =
+            state.transactions
 
+              .filter(
+                t =>
+                  t.date === d
+              )
 
-            const dayExpense =
-              txs
-                .filter(
-                  t =>
-                    t.type === 'expense'
-                )
-                .reduce(
-                  (s,t) =>
-                    s + t.amount,
-                  0
-                );
+              .sort(
+                (a,b) =>
+                  b.createdAt -
+                  a.createdAt
+              );
 
 
-            const dayIncome =
-              txs
-                .filter(
-                  t =>
-                    t.type === 'income'
-                )
-                .reduce(
-                  (s,t) =>
-                    s + t.amount,
-                  0
-                );
+          const dayExpense =
+            txs
+
+              .filter(
+                t =>
+                  t.type === 'expense'
+              )
+
+              .reduce(
+                (s,t) =>
+                  s + t.amount,
+                0
+              );
 
 
-            return `
-              <div
-                class="history-day"
-                data-date="${d}"
-              >
+          const dayIncome =
+            txs
 
-                <button
-                  class="history-summary"
-                  data-toggle="${d}"
-                >
+              .filter(
+                t =>
+                  t.type === 'income'
+              )
 
-                  <span class="hd-date">
-
-                    ${fmtDateLabel(d)}
-
-                    <span class="caret">
-                      ▶
-                    </span>
-
-                  </span>
-
-                  <span class="hd-total">
-                    支出 ${yen(dayExpense)}
-                    /
-                    収入 ${yen(dayIncome)}
-                  </span>
-
-                </button>
+              .reduce(
+                (s,t) =>
+                  s + t.amount,
+                0
+              );
 
 
-                <div class="history-body ledger">
+          return `<div
+            class="history-day"
+            data-date="${d}"
+          >
 
-                  ${txs
-                    .map(rowHtml)
-                    .join('')}
+            <button
+              class="history-summary"
+              data-toggle="${d}"
+            >
 
-                </div>
+              <span class="hd-date">
 
-              </div>
-            `;
+                ${fmtDateLabel(d)}
 
-          })
-          .join('');
+                <span class="caret">
+                  ▶
+                </span>
+
+              </span>
+
+              <span class="hd-total">
+                支出 ${yen(dayExpense)}
+                /
+                収入 ${yen(dayIncome)}
+              </span>
+
+            </button>
+
+            <div class="history-body ledger">
+              ${txs.map(rowHtml).join('')}
+            </div>
+
+          </div>`;
+
+        }).join('');
 
     }
 
@@ -2015,9 +2062,7 @@
     bindDynamicHandlers();
 
 
-    /*
-     * 設定欄
-     */
+    /* settings */
 
     document.getElementById(
       'budgetInput'
@@ -2051,11 +2096,9 @@
   }
 
 
-  /*
-   * ==============================
-   * 動的ボタン
-   * ==============================
-   */
+  /* =========================================================
+     動的ボタン
+     ========================================================= */
 
   function bindDynamicHandlers(){
 
@@ -2075,7 +2118,8 @@
             state.transactions =
               state.transactions.filter(
                 t =>
-                  String(t.id) !== id
+                  String(t.id) !==
+                  id
               );
 
 
@@ -2086,6 +2130,10 @@
             if(ok){
 
               render();
+
+              showSyncNote(
+                '削除しました'
+              );
 
             }
 
@@ -2103,8 +2151,9 @@
 
             btn
               .closest('.history-day')
-              .classList
-              .toggle('open');
+              .classList.toggle(
+                'open'
+              );
 
           };
 
@@ -2113,43 +2162,37 @@
   }
 
 
-  /*
-   * ==============================
-   * タブ
-   * ==============================
-   */
+  /* =========================================================
+     タブ移動
+     ========================================================= */
 
   function goToTab(name){
 
     document
       .querySelectorAll('.tab-panel')
-      .forEach(p => {
-
-        p.classList.toggle(
-          'active',
-          p.id === 'tab-' + name
-        );
-
-      });
+      .forEach(
+        p =>
+          p.classList.toggle(
+            'active',
+            p.id === 'tab-' + name
+          )
+      );
 
 
     document
       .querySelectorAll('.nav-btn')
-      .forEach(b => {
-
-        b.classList.toggle(
-          'active',
-          b.getAttribute(
-            'data-tab'
-          ) === name
-        );
-
-      });
+      .forEach(
+        b =>
+          b.classList.toggle(
+            'active',
+            b.getAttribute('data-tab') === name
+          )
+      );
 
 
-    document
-      .querySelector('main')
-      .scrollTop = 0;
+    document.querySelector(
+      'main'
+    ).scrollTop = 0;
 
 
     document.getElementById(
@@ -2196,20 +2239,18 @@
     });
 
 
-  document
-    .getElementById('fabAdd')
-    .addEventListener(
-      'click',
-      () =>
-        goToTab('input')
-    );
+  document.getElementById(
+    'fabAdd'
+  ).addEventListener(
+    'click',
+    () =>
+      goToTab('input')
+  );
 
 
-  /*
-   * ==============================
-   * 入力
-   * ==============================
-   */
+  /* =========================================================
+     入力フォーム
+     ========================================================= */
 
   document.getElementById(
     'entryDate'
@@ -2224,7 +2265,9 @@
     e => {
 
       const btn =
-        e.target.closest('button');
+        e.target.closest(
+          'button'
+        );
 
       if(!btn) return;
 
@@ -2239,14 +2282,13 @@
         .querySelectorAll(
           '#typeToggle button'
         )
-        .forEach(b => {
-
-          b.classList.toggle(
-            'active',
-            b === btn
-          );
-
-        });
+        .forEach(
+          b =>
+            b.classList.toggle(
+              'active',
+              b === btn
+            )
+        );
 
     }
   );
@@ -2259,7 +2301,9 @@
     e => {
 
       const btn =
-        e.target.closest('button');
+        e.target.closest(
+          'button'
+        );
 
       if(!btn) return;
 
@@ -2274,24 +2318,17 @@
         .querySelectorAll(
           '#acctSelect .acct-btn'
         )
-        .forEach(b => {
-
-          b.classList.toggle(
-            'active',
-            b === btn
-          );
-
-        });
+        .forEach(
+          b =>
+            b.classList.toggle(
+              'active',
+              b === btn
+            )
+        );
 
     }
   );
 
-
-  /*
-   * ==============================
-   * 支出・収入登録
-   * ==============================
-   */
 
   document.getElementById(
     'entryForm'
@@ -2323,17 +2360,14 @@
         ).value.trim();
 
 
-      if(
-        !amount ||
-        amount <= 0
-      ){
+      if(!amount || amount <= 0){
 
         return;
 
       }
 
 
-      state.transactions.push({
+      const transaction = {
 
         id:
           Date.now() +
@@ -2354,7 +2388,12 @@
         createdAt:
           Date.now()
 
-      });
+      };
+
+
+      state.transactions.push(
+        transaction
+      );
 
 
       const ok =
@@ -2363,12 +2402,15 @@
 
       if(!ok){
 
-        /*
-         * 保存失敗時は追加した記録を
-         * ローカル状態から戻す
-         */
+        /* 保存失敗した場合は
+           画面上の仮データも戻す */
 
-        state.transactions.pop();
+        state.transactions =
+          state.transactions.filter(
+            t =>
+              t.id !==
+              transaction.id
+          );
 
         render();
 
@@ -2400,6 +2442,11 @@
         '記録しました';
 
 
+      showSyncNote(
+        '共有しました'
+      );
+
+
       setTimeout(
         () => {
 
@@ -2421,11 +2468,9 @@
   );
 
 
-  /*
-   * ==============================
-   * 設定
-   * ==============================
-   */
+  /* =========================================================
+     設定
+     ========================================================= */
 
   document.getElementById(
     'budgetEditToggle'
@@ -2534,12 +2579,6 @@
   );
 
 
-  /*
-   * ==============================
-   * 全リセット
-   * ==============================
-   */
-
   document.getElementById(
     'resetBtn'
   ).addEventListener(
@@ -2585,7 +2624,7 @@
 
         render();
 
-        flashNote(
+        showSyncNote(
           'すべてリセットしました'
         );
 
@@ -2614,8 +2653,7 @@
           n.textContent === msg
         ){
 
-          n.textContent =
-            '';
+          n.textContent = '';
 
         }
 
@@ -2626,11 +2664,9 @@
   }
 
 
-  /*
-   * ==============================
-   * 初回設定
-   * ==============================
-   */
+  /* =========================================================
+     初回設定
+     ========================================================= */
 
   document.getElementById(
     'obStart'
@@ -2711,6 +2747,11 @@
 
       render();
 
+
+      showSyncNote(
+        '共有データを作成しました'
+      );
+
     }
   );
 
@@ -2745,19 +2786,32 @@
 
       render();
 
+
+      showSyncNote(
+        '共有データを作成しました'
+      );
+
     }
   );
 
 
-  /*
-   * ==============================
-   * 起動
-   * ==============================
-   */
+  /* =========================================================
+     起動
+     ========================================================= */
 
   (async function init(){
 
-    await loadAll();
+    const loaded =
+      await loadAll();
+
+
+    if(!loaded){
+
+      console.warn(
+        'Supabaseからの読み込みに失敗しました'
+      );
+
+    }
 
 
     if(!state.onboarded){
@@ -2773,10 +2827,47 @@
 
     render();
 
+
+    /* ---------------------------------------------
+       3秒ごとに共有データを確認
+       --------------------------------------------- */
+
+    setInterval(
+      refreshFromSupabase,
+      3000
+    );
+
   })();
 
-
 })();
+</script>
+
+
+<!-- Supabase接続状態表示 -->
+<div id="syncNote" class="sync-note"></div>
+
+
+<script>
+if ('serviceWorker' in navigator) {
+
+  window.addEventListener(
+    'load',
+    () => {
+
+      navigator.serviceWorker
+        .register('./sw.js')
+        .catch(
+          error =>
+            console.error(
+              'Service Worker error:',
+              error
+            )
+        );
+
+    }
+  );
+
+}
 </script>
 
 </body>
