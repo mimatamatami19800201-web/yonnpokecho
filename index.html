@@ -41,7 +41,7 @@
   }
 
   body{
-    font-family:'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+    font-family:'Zen Kaku Gothic New','Hiragino Sans',sans-serif;
     color:var(--ink);
     display:flex;
     justify-content:center;
@@ -49,12 +49,10 @@
   }
 
   h1,h2,h3{
-    font-family:'Shippori Mincho', serif;
+    font-family:'Shippori Mincho',serif;
     margin:0;
     font-weight:700;
   }
-
-  /* ---- phone shell ---- */
 
   .phone-shell{
     width:100%;
@@ -104,8 +102,6 @@
     display:block;
   }
 
-  /* ---- home: gauge ---- */
-
   .gauge-block{
     margin-bottom:22px;
   }
@@ -124,7 +120,7 @@
   }
 
   .gauge-figure .amt{
-    font-family:'Shippori Mincho', serif;
+    font-family:'Shippori Mincho',serif;
     font-size:42px;
     font-weight:700;
     line-height:1;
@@ -155,7 +151,7 @@
     left:0;
     bottom:0;
     background:var(--safe);
-    transition:width .35s ease, background .35s ease;
+    transition:width .35s ease,background .35s ease;
     width:0%;
   }
 
@@ -183,8 +179,6 @@
     cursor:pointer;
     display:inline-block;
   }
-
-  /* ---- pockets ---- */
 
   .pockets{
     display:grid;
@@ -219,7 +213,7 @@
   }
 
   .pocket .pbal{
-    font-family:'Shippori Mincho', serif;
+    font-family:'Shippori Mincho',serif;
     font-size:19px;
     font-weight:700;
     font-variant-numeric:tabular-nums;
@@ -255,8 +249,6 @@
     cursor:pointer;
     font-family:'Zen Kaku Gothic New',sans-serif;
   }
-
-  /* ---- ledger rows ---- */
 
   .ledger{
     display:flex;
@@ -336,8 +328,6 @@
     padding:16px 0;
     text-align:center;
   }
-
-  /* ---- input tab ---- */
 
   form.entry{
     display:flex;
@@ -446,8 +436,6 @@
     margin-top:2px;
   }
 
-  /* ---- history tab ---- */
-
   .history-day{
     border-bottom:1px solid var(--line);
   }
@@ -496,8 +484,6 @@
     font-size:9px;
   }
 
-  /* ---- settings tab ---- */
-
   .settings-block{
     margin-bottom:26px;
   }
@@ -528,11 +514,29 @@
   .save-note{
     font-size:11.5px;
     color:var(--safe);
-    height:14px;
+    min-height:14px;
     margin-top:6px;
   }
 
-  /* ---- bottom nav ---- */
+  .sync-status{
+    position:fixed;
+    top:7px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:100;
+    font-size:10px;
+    padding:3px 8px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--ink-soft);
+    opacity:.9;
+    pointer-events:none;
+  }
+
+  .sync-status.error{
+    color:var(--danger);
+    border-color:var(--danger);
+  }
 
   .bottom-nav{
     position:absolute;
@@ -577,8 +581,6 @@
     stroke:var(--ink);
   }
 
-  /* ---- FAB ---- */
-
   .fab{
     position:absolute;
     right:18px;
@@ -602,8 +604,6 @@
   .fab:active{
     transform:scale(0.94);
   }
-
-  /* ---- onboarding ---- */
 
   .onboarding-overlay{
     position:absolute;
@@ -679,36 +679,14 @@
     text-decoration:underline;
     cursor:pointer;
   }
-
-  /* ---- sync status ---- */
-
-  .sync-status{
-    position:fixed;
-    top:8px;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:100;
-    font-size:10px;
-    padding:4px 9px;
-    background:rgba(43,58,68,.92);
-    color:#fff;
-    border-radius:10px;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .2s;
-  }
-
-  .sync-status.show{
-    opacity:1;
-  }
 </style>
 </head>
 
 <body>
 
-<div class="sync-status" id="syncStatus">同期中...</div>
-
 <div class="phone-shell">
+
+  <div class="sync-status" id="syncStatus">接続中...</div>
 
   <div class="topbar">
     <h1>よんぽけ帳</h1>
@@ -748,9 +726,7 @@
 
       <div class="section-head">
         <h2>今日の記録</h2>
-        <button class="see-all" data-goto="history">
-          履歴を見る
-        </button>
+        <button class="see-all" data-goto="history">履歴を見る</button>
       </div>
 
       <div class="ledger" id="todayLedger"></div>
@@ -770,57 +746,35 @@
         <div class="row">
 
           <div class="toggle" id="typeToggle">
-
-            <button
-              type="button"
-              data-type="expense"
-              class="active">
+            <button type="button" data-type="expense" class="active">
               支出
             </button>
 
-            <button
-              type="button"
-              data-type="income">
+            <button type="button" data-type="income">
               収入
             </button>
-
           </div>
 
-          <input
-            type="date"
-            id="entryDate"
-            required />
+          <input type="date" id="entryDate" required />
 
         </div>
 
 
         <div class="acct-select" id="acctSelect">
 
-          <button
-            type="button"
-            class="acct-btn active"
-            data-acct="wallet">
+          <button type="button" class="acct-btn active" data-acct="wallet">
             財布
           </button>
 
-          <button
-            type="button"
-            class="acct-btn"
-            data-acct="bank">
+          <button type="button" class="acct-btn" data-acct="bank">
             銀行
           </button>
 
-          <button
-            type="button"
-            class="acct-btn"
-            data-acct="points">
+          <button type="button" class="acct-btn" data-acct="points">
             ポイント
           </button>
 
-          <button
-            type="button"
-            class="acct-btn"
-            data-acct="card">
+          <button type="button" class="acct-btn" data-acct="card">
             カード
           </button>
 
@@ -833,24 +787,21 @@
           placeholder="金額"
           min="1"
           step="1"
-          required />
+          required
+        />
 
         <input
           type="text"
           id="entryMemo"
           placeholder="メモ（任意）"
-          maxlength="40" />
+          maxlength="40"
+        />
 
-        <button
-          type="submit"
-          class="submit-btn">
+        <button type="submit" class="submit-btn">
           記録する
         </button>
 
-        <div
-          class="confirm-flash"
-          id="confirmFlash">
-        </div>
+        <div class="confirm-flash" id="confirmFlash"></div>
 
       </form>
 
@@ -864,14 +815,9 @@
         <h2>今日</h2>
       </div>
 
-      <div
-        class="ledger"
-        id="historyTodayLedger">
-      </div>
+      <div class="ledger" id="historyTodayLedger"></div>
 
-      <div
-        class="section-head"
-        style="margin-top:22px;">
+      <div class="section-head" style="margin-top:22px;">
         <h2>過去の記録</h2>
       </div>
 
@@ -894,21 +840,21 @@
           一日の目標支出額
         </div>
 
-        <div
-          class="row"
-          style="margin-top:8px;">
+        <div class="row" style="margin-top:8px;">
 
           <input
             type="number"
             id="budgetInput"
             min="0"
-            step="100" />
+            step="100"
+          />
 
           <button
             type="button"
             class="submit-btn"
             id="saveBudgetBtn"
-            style="flex:0 0 auto;padding:11px 16px;margin-top:0;">
+            style="flex:0 0 auto;padding:11px 16px;margin-top:0;"
+          >
             保存
           </button>
 
@@ -921,70 +867,59 @@
 
         <div
           class="gauge-label"
-          style="margin-bottom:10px;">
+          style="margin-bottom:10px;"
+        >
           残高を直接調整する
         </div>
 
         <div class="init-bal-row">
           <span>財布</span>
-          <input
-            type="number"
-            id="balWallet"
-            step="1" />
+          <input type="number" id="balWallet" step="1" />
         </div>
 
         <div class="init-bal-row">
           <span>銀行</span>
-          <input
-            type="number"
-            id="balBank"
-            step="1" />
+          <input type="number" id="balBank" step="1" />
         </div>
 
         <div class="init-bal-row">
           <span>ポイント</span>
-          <input
-            type="number"
-            id="balPoints"
-            step="1" />
+          <input type="number" id="balPoints" step="1" />
         </div>
 
         <div class="init-bal-row">
           <span>カード未払い</span>
-          <input
-            type="number"
-            id="balCard"
-            step="1" />
+          <input type="number" id="balCard" step="1" />
         </div>
 
         <button
           type="button"
           class="submit-btn"
-          id="saveBalBtn">
+          id="saveBalBtn"
+        >
           残高を保存
         </button>
 
       </div>
 
 
-      <div
-        class="save-note"
-        id="saveNote">
-      </div>
+      <div class="save-note" id="saveNote"></div>
 
 
       <div class="settings-block">
 
         <div
           class="gauge-label"
-          style="margin-bottom:10px;">
+          style="margin-bottom:10px;"
+        >
           データを消す
         </div>
 
         <button
           type="button"
           class="reset-btn"
-          id="resetBtn">
+          id="resetBtn"
+        >
           すべての記録をリセット
         </button>
 
@@ -998,7 +933,8 @@
   <button
     class="fab"
     id="fabAdd"
-    title="記録を追加">
+    title="記録を追加"
+  >
     ＋
   </button>
 
@@ -1007,72 +943,59 @@
 
     <button
       class="nav-btn active"
-      data-tab="home">
-
+      data-tab="home"
+    >
       <svg viewBox="0 0 24 24">
         <path d="M4 11.5 12 4l8 7.5"/>
         <path d="M6 10v9h5v-5h2v5h5v-9"/>
       </svg>
-
       ホーム
-
     </button>
 
 
     <button
       class="nav-btn"
-      data-tab="input">
-
+      data-tab="input"
+    >
       <svg viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="8.5"/>
         <path d="M12 8v8M8 12h8"/>
       </svg>
-
       入力
-
     </button>
 
 
     <button
       class="nav-btn"
-      data-tab="history">
-
+      data-tab="history"
+    >
       <svg viewBox="0 0 24 24">
-        <rect
-          x="5"
-          y="3.5"
-          width="14"
-          height="17"
-          rx="0.5"/>
+        <rect x="5" y="3.5" width="14" height="17" rx="0.5"/>
         <path d="M8 8h8M8 11.5h8M8 15h5"/>
       </svg>
-
       履歴
-
     </button>
 
 
     <button
       class="nav-btn"
-      data-tab="settings">
-
+      data-tab="settings"
+    >
       <svg viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="3"/>
         <path d="M12 3.5v2.6M12 17.9v2.6M4.9 6.9l1.9 1.9M17.2 15.2l1.9 1.9M3.5 12h2.6M17.9 12h2.6M4.9 17.1l1.9-1.9M17.2 8.8l1.9-1.9"/>
       </svg>
-
       設定
-
     </button>
 
   </nav>
 
 
   <!-- ONBOARDING -->
-
   <div
     class="onboarding-overlay hidden"
-    id="onboarding">
+    id="onboarding"
+  >
 
     <h2>
       はじめまして。<br>
@@ -1085,71 +1008,56 @@
 
 
     <div class="ob-row wallet">
-
-      <span class="tag">
-        財布
-      </span>
-
+      <span class="tag">財布</span>
       <input
         type="number"
         id="obWallet"
         placeholder="0"
-        step="1" />
-
+        step="1"
+      />
     </div>
 
 
     <div class="ob-row bank">
-
-      <span class="tag">
-        銀行
-      </span>
-
+      <span class="tag">銀行</span>
       <input
         type="number"
         id="obBank"
         placeholder="0"
-        step="1" />
-
+        step="1"
+      />
     </div>
 
 
     <div class="ob-row points">
-
-      <span class="tag">
-        ポイント
-      </span>
-
+      <span class="tag">ポイント</span>
       <input
         type="number"
         id="obPoints"
         placeholder="0"
-        step="1" />
-
+        step="1"
+      />
     </div>
 
 
     <div class="ob-row card">
-
-      <span class="tag">
-        カード未払い
-      </span>
-
+      <span class="tag">カード未払い</span>
       <input
         type="number"
         id="obCard"
         placeholder="0"
-        step="1" />
-
+        step="1"
+      />
     </div>
 
 
     <div
       class="ob-row"
-      style="grid-template-columns:70px 1fr;">
-
+      style="grid-template-columns:70px 1fr;"
+    >
       <span
-        style="font-size:12px;color:var(--ink-soft);">
+        style="font-size:12px;color:var(--ink-soft);"
+      >
         一日の目標
       </span>
 
@@ -1157,8 +1065,8 @@
         type="number"
         id="obBudget"
         placeholder="例）3000"
-        step="100" />
-
+        step="100"
+      />
     </div>
 
 
@@ -1167,14 +1075,16 @@
       <button
         type="button"
         class="submit-btn"
-        id="obStart">
+        id="obStart"
+      >
         はじめる
       </button>
 
       <button
         type="button"
         class="ob-skip"
-        id="obSkip">
+        id="obSkip"
+      >
         後で設定する（0円ではじめる）
       </button>
 
@@ -1186,45 +1096,9 @@
 
 
 <script>
-
 (function(){
 
-  /* ==================================================
-     Supabase設定
-     ================================================== */
-
-  const SUPABASE_URL =
-    "https://ogxpilzwyihpigpffgcq.supabase.co";
-
-  const SUPABASE_KEY =
-    "sb_publishable_P-FwI0_H9oAl7VyTG8oLoQ_651FpIYz";
-
-  const supabase =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-
-  /* ==================================================
-     共有家計簿ID
-     ================================================== */
-
-  /*
-    このIDが同じなら、
-    あなたのスマホと彼女のスマホで
-    同じ家計簿データを使用する。
-  */
-
-  const KAKEIBO_ID = "shared";
-
-
-  /* ==================================================
-     アカウント
-     ================================================== */
-
   const ACCTS = {
-
     wallet:{
       label:'財布',
       class:'wallet'
@@ -1244,13 +1118,87 @@
       label:'カード',
       class:'card'
     }
-
   };
 
 
-  /* ==================================================
-     共通関数
-     ================================================== */
+  /*
+   * ==============================
+   * Supabase設定
+   * ==============================
+   */
+
+  const SUPABASE_URL =
+    "https://ogxpilzwyihpigpffgcq.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_P-FwI0_H9oAl7VyTG8oLoQ_651FpIYz";
+
+  const KAKEIBO_ID = "shared";
+
+
+  const supabase =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  /*
+   * ==============================
+   * 状態
+   * ==============================
+   */
+
+  let state = {
+    settings:{
+      dailyBudget:3000
+    },
+
+    accounts:{
+      wallet:0,
+      bank:0,
+      points:0,
+      card:0
+    },
+
+    transactions:[],
+
+    onboarded:false
+  };
+
+
+  let formType = 'expense';
+  let formAcct = 'wallet';
+
+
+  /*
+   * ==============================
+   * 同期表示
+   * ==============================
+   */
+
+  function setSyncStatus(message, isError=false){
+
+    const el =
+      document.getElementById('syncStatus');
+
+    if(!el) return;
+
+    el.textContent = message;
+
+    el.classList.toggle(
+      'error',
+      !!isError
+    );
+
+  }
+
+
+  /*
+   * ==============================
+   * 日付・表示
+   * ==============================
+   */
 
   const todayStr = () => {
 
@@ -1270,7 +1218,8 @@
       new Date(y,m-1,d);
 
     const wd =
-      ['日','月','火','水','木','金','土'][dt.getDay()];
+      ['日','月','火','水','木','金','土']
+      [dt.getDay()];
 
     return `${m}月${d}日（${wd}）`;
 
@@ -1283,78 +1232,24 @@
       .toLocaleString('ja-JP');
 
 
-  /* ==================================================
-     State
-     ================================================== */
-
-  let state = {
-
-    settings:{
-      dailyBudget:3000
-    },
-
-    accounts:{
-      wallet:0,
-      bank:0,
-      points:0,
-      card:0
-    },
-
-    transactions:[],
-
-    onboarded:false
-
-  };
-
-
-  let formType = 'expense';
-  let formAcct = 'wallet';
-
-
-  /* ==================================================
-     同期表示
-     ================================================== */
-
-  function showSyncStatus(message){
-
-    const el =
-      document.getElementById('syncStatus');
-
-    el.textContent = message;
-
-    el.classList.add('show');
-
-    setTimeout(()=>{
-
-      el.classList.remove('show');
-
-    },1200);
-
-  }
-
-
-  /* ==================================================
-     Supabaseから読み込み
-     ================================================== */
+  /*
+   * ==============================
+   * Supabaseから読み込み
+   * ==============================
+   */
 
   async function loadAll(){
 
-    showSyncStatus('読み込み中...');
+    setSyncStatus('同期中...');
 
     try{
 
-      const {
-        data,
-        error
-      } = await supabase
-
-        .from('kakeibo_state')
-
-        .select('data')
-
-        .eq('id',KAKEIBO_ID)
-
-        .maybeSingle();
+      const { data, error } =
+        await supabase
+          .from('kakeibo_state')
+          .select('data')
+          .eq('id', KAKEIBO_ID)
+          .maybeSingle();
 
 
       if(error){
@@ -1364,31 +1259,35 @@
           error
         );
 
-        showSyncStatus('読み込みエラー');
+        setSyncStatus(
+          '同期エラー',
+          true
+        );
 
         return;
 
       }
 
 
-      /* ---------------------------------------------
-         Supabaseに既存データがある
-         --------------------------------------------- */
+      /*
+       * Supabaseに既存データがある場合
+       */
 
       if(data && data.data){
 
         const remote =
           data.data;
 
-
         state.settings =
-          remote.settings || {
+          remote.settings ||
+          {
             dailyBudget:3000
           };
 
 
         state.accounts =
-          remote.accounts || {
+          remote.accounts ||
+          {
             wallet:0,
             bank:0,
             points:0,
@@ -1397,7 +1296,9 @@
 
 
         state.transactions =
-          Array.isArray(remote.transactions)
+          Array.isArray(
+            remote.transactions
+          )
             ? remote.transactions
             : [];
 
@@ -1406,38 +1307,21 @@
           !!remote.onboarded;
 
 
-        showSyncStatus('同期しました');
+        setSyncStatus(
+          '同期済み'
+        );
 
         return;
 
       }
 
 
-      /* ---------------------------------------------
-         Supabaseが空の場合
-         ↓
-         既存localStorageから一度だけ移行
-         --------------------------------------------- */
-
-      let localState = {
-
-        settings:{
-          dailyBudget:3000
-        },
-
-        accounts:{
-          wallet:0,
-          bank:0,
-          points:0,
-          card:0
-        },
-
-        transactions:[],
-
-        onboarded:false
-
-      };
-
+      /*
+       * Supabaseが空の場合
+       *
+       * この端末の既存localStorageを
+       * 初回データとして移行する
+       */
 
       try{
 
@@ -1446,9 +1330,12 @@
             'kakeibo:settings'
           );
 
-        if(v)
-          localState.settings =
+        if(v){
+
+          state.settings =
             JSON.parse(v);
+
+        }
 
       }catch(e){}
 
@@ -1460,9 +1347,12 @@
             'kakeibo:accounts'
           );
 
-        if(v)
-          localState.accounts =
+        if(v){
+
+          state.accounts =
             JSON.parse(v);
+
+        }
 
       }catch(e){}
 
@@ -1474,9 +1364,12 @@
             'kakeibo:transactions'
           );
 
-        if(v)
-          localState.transactions =
+        if(v){
+
+          state.transactions =
             JSON.parse(v);
+
+        }
 
       }catch(e){}
 
@@ -1488,24 +1381,21 @@
             'kakeibo:onboarded'
           );
 
-        if(v)
-          localState.onboarded =
+        if(v){
+
+          state.onboarded =
             JSON.parse(v);
+
+        }
 
       }catch(e){}
 
 
-      state = localState;
-
-
       /*
-        旧データをSupabaseへ初回移行
-      */
+       * 初回移行
+       */
 
       await saveAll();
-
-
-      showSyncStatus('データを移行しました');
 
 
     }catch(e){
@@ -1515,61 +1405,64 @@
         e
       );
 
-      showSyncStatus('接続エラー');
+      setSyncStatus(
+        '接続エラー',
+        true
+      );
 
     }
 
   }
 
 
-  /* ==================================================
-     Supabaseへ保存
-     ================================================== */
+  /*
+   * ==============================
+   * Supabaseへ保存
+   * ==============================
+   */
 
   async function saveAll(){
 
-    showSyncStatus('保存中...');
+    setSyncStatus('保存中...');
+
+
+    const payload = {
+
+      id:KAKEIBO_ID,
+
+      data:{
+
+        settings:
+          state.settings,
+
+        accounts:
+          state.accounts,
+
+        transactions:
+          state.transactions,
+
+        onboarded:
+          state.onboarded
+
+      },
+
+      updated_at:
+        new Date().toISOString()
+
+    };
+
 
     try{
 
-      const payload = {
-
-        id:KAKEIBO_ID,
-
-        data:{
-
-          settings:
-            state.settings,
-
-          accounts:
-            state.accounts,
-
-          transactions:
-            state.transactions,
-
-          onboarded:
-            state.onboarded
-
-        },
-
-        updated_at:
-          new Date().toISOString()
-
-      };
-
-
-      const {
-        error
-      } = await supabase
-
-        .from('kakeibo_state')
-
-        .upsert(
-          payload,
-          {
-            onConflict:'id'
-          }
-        );
+      const { error } =
+        await supabase
+          .from('kakeibo_state')
+          .upsert(
+            payload,
+            {
+              onConflict:'id'
+            }
+          );
 
 
       if(error){
@@ -1579,14 +1472,24 @@
           error
         );
 
-        showSyncStatus('保存エラー');
+        setSyncStatus(
+          '保存エラー',
+          true
+        );
+
+        alert(
+          'データの共有保存に失敗しました。\n\n' +
+          error.message
+        );
 
         return false;
 
       }
 
 
-      showSyncStatus('保存しました');
+      setSyncStatus(
+        '同期済み'
+      );
 
       return true;
 
@@ -1598,7 +1501,15 @@
         e
       );
 
-      showSyncStatus('保存エラー');
+      setSyncStatus(
+        '保存エラー',
+        true
+      );
+
+      alert(
+        'Supabaseへの保存中にエラーが発生しました。\n\n' +
+        e.message
+      );
 
       return false;
 
@@ -1608,10 +1519,10 @@
 
 
   /*
-    既存コードとの互換用。
-    今まで saveSettings() などを呼んでいた箇所は
-    そのまま動く。
-  */
+   * ==============================
+   * 既存コードとの互換用
+   * ==============================
+   */
 
   async function saveSettings(){
 
@@ -1643,9 +1554,11 @@
   }
 
 
-  /* ==================================================
-     残高計算
-     ================================================== */
+  /*
+   * ==============================
+   * 残高計算
+   * ==============================
+   */
 
   function getBalances(){
 
@@ -1659,16 +1572,20 @@
       if(t.account === 'card'){
 
         bal.card +=
-          (t.type === 'expense'
-            ? t.amount
-            : -t.amount);
+          (
+            t.type === 'expense'
+              ? t.amount
+              : -t.amount
+          );
 
       }else{
 
         bal[t.account] +=
-          (t.type === 'income'
-            ? t.amount
-            : -t.amount);
+          (
+            t.type === 'income'
+              ? t.amount
+              : -t.amount
+          );
 
       }
 
@@ -1680,24 +1597,23 @@
   }
 
 
-  /* ==================================================
-     今日の支出
-     ================================================== */
+  /*
+   * ==============================
+   * 今日の支出
+   * ==============================
+   */
 
   function todaysExpenseTotal(){
 
     const today =
       todayStr();
 
-
     return state.transactions
-
       .filter(
         t =>
           t.date === today &&
           t.type === 'expense'
       )
-
       .reduce(
         (s,t) =>
           s + t.amount,
@@ -1707,15 +1623,16 @@
   }
 
 
-  /* ==================================================
-     取引行
-     ================================================== */
+  /*
+   * ==============================
+   * 履歴行
+   * ==============================
+   */
 
   function rowHtml(t){
 
     const a =
       ACCTS[t.account];
-
 
     const sign =
       t.type === 'income'
@@ -1724,7 +1641,6 @@
 
 
     return `
-
       <div class="ledger-row">
 
         <span class="tag ${a.class}">
@@ -1736,10 +1652,10 @@
             t.memo
               ? escapeHtml(t.memo)
               : (
-                  t.type === 'income'
-                    ? '収入'
-                    : '支出'
-                )
+                t.type === 'income'
+                  ? '収入'
+                  : '支出'
+              )
           }
         </span>
 
@@ -1749,12 +1665,12 @@
 
         <button
           class="del"
-          data-del="${t.id}">
+          data-del="${t.id}"
+        >
           削除
         </button>
 
       </div>
-
     `;
 
   }
@@ -1772,9 +1688,11 @@
   }
 
 
-  /* ==================================================
-     画面描画
-     ================================================== */
+  /*
+   * ==============================
+   * 描画
+   * ==============================
+   */
 
   function render(){
 
@@ -1784,21 +1702,18 @@
       fmtDateLabel(todayStr());
 
 
-    /* ---------------------------------------------
-       gauge
-       --------------------------------------------- */
+    /*
+     * ゲージ
+     */
 
     const spent =
       todaysExpenseTotal();
 
-
     const budget =
       state.settings.dailyBudget || 0;
 
-
     const remain =
       budget - spent;
-
 
     const pct =
       budget > 0
@@ -1817,7 +1732,6 @@
       document.getElementById(
         'gaugeFigure'
       );
-
 
     const fill =
       document.getElementById(
@@ -1852,7 +1766,6 @@
       'danger'
     );
 
-
     fig.classList.remove(
       'over'
     );
@@ -1860,7 +1773,9 @@
 
     if(remain < 0){
 
-      fig.classList.add('over');
+      fig.classList.add(
+        'over'
+      );
 
       fill.classList.add(
         'danger'
@@ -1875,9 +1790,9 @@
     }
 
 
-    /* ---------------------------------------------
-       pockets
-       --------------------------------------------- */
+    /*
+     * ポケット
+     */
 
     const bal =
       getBalances();
@@ -1886,14 +1801,11 @@
     document.getElementById(
       'pockets'
     ).innerHTML =
-
       Object.keys(ACCTS)
-
         .map(k => {
 
           const a =
             ACCTS[k];
-
 
           const note =
             k === 'card'
@@ -1902,7 +1814,6 @@
 
 
           return `
-
             <div class="pocket ${a.class}">
 
               <div class="pname">
@@ -1920,30 +1831,26 @@
               }
 
             </div>
-
           `;
 
         })
-
         .join('');
 
 
-    /* ---------------------------------------------
-       今日の記録
-       --------------------------------------------- */
+    /*
+     * 今日の記録
+     */
 
     const today =
       todayStr();
 
 
     const todayTx =
-
       state.transactions
-
         .filter(
-          t => t.date === today
+          t =>
+            t.date === today
         )
-
         .sort(
           (a,b) =>
             b.createdAt -
@@ -1952,16 +1859,15 @@
 
 
     const todayHtml =
-
       todayTx.length
-
         ? todayTx
             .map(rowHtml)
             .join('')
-
-        : `<div class="empty">
-             まだ記録がありません
-           </div>`;
+        : `
+          <div class="empty">
+            まだ記録がありません
+          </div>
+        `;
 
 
     document.getElementById(
@@ -1976,28 +1882,24 @@
       todayHtml;
 
 
-    /* ---------------------------------------------
-       履歴
-       --------------------------------------------- */
+    /*
+     * 過去の記録
+     */
 
     const dates =
-
       [
         ...new Set(
-
           state.transactions
-
             .filter(
-              t => t.date !== today
+              t =>
+                t.date !== today
             )
-
             .map(
-              t => t.date
+              t =>
+                t.date
             )
-
         )
       ]
-
       .sort(
         (a,b) =>
           b.localeCompare(a)
@@ -2012,27 +1914,24 @@
 
     if(dates.length === 0){
 
-      historyList.innerHTML =
-        `<div class="empty">
-           過去の記録はまだありません
-         </div>`;
+      historyList.innerHTML = `
+        <div class="empty">
+          過去の記録はまだありません
+        </div>
+      `;
 
     }else{
 
       historyList.innerHTML =
-
         dates
-
           .map(d => {
 
             const txs =
-
               state.transactions
-
                 .filter(
-                  t => t.date === d
+                  t =>
+                    t.date === d
                 )
-
                 .sort(
                   (a,b) =>
                     b.createdAt -
@@ -2041,13 +1940,11 @@
 
 
             const dayExpense =
-
               txs
-
                 .filter(
-                  t => t.type === 'expense'
+                  t =>
+                    t.type === 'expense'
                 )
-
                 .reduce(
                   (s,t) =>
                     s + t.amount,
@@ -2056,13 +1953,11 @@
 
 
             const dayIncome =
-
               txs
-
                 .filter(
-                  t => t.type === 'income'
+                  t =>
+                    t.type === 'income'
                 )
-
                 .reduce(
                   (s,t) =>
                     s + t.amount,
@@ -2071,14 +1966,15 @@
 
 
             return `
-
               <div
                 class="history-day"
-                data-date="${d}">
+                data-date="${d}"
+              >
 
                 <button
                   class="history-summary"
-                  data-toggle="${d}">
+                  data-toggle="${d}"
+                >
 
                   <span class="hd-date">
 
@@ -2091,33 +1987,26 @@
                   </span>
 
                   <span class="hd-total">
-
                     支出 ${yen(dayExpense)}
                     /
                     収入 ${yen(dayIncome)}
-
                   </span>
 
                 </button>
 
 
-                <div
-                  class="history-body ledger">
+                <div class="history-body ledger">
 
-                  ${
-                    txs
-                      .map(rowHtml)
-                      .join('')
-                  }
+                  ${txs
+                    .map(rowHtml)
+                    .join('')}
 
                 </div>
 
               </div>
-
             `;
 
           })
-
           .join('');
 
     }
@@ -2126,9 +2015,9 @@
     bindDynamicHandlers();
 
 
-    /* ---------------------------------------------
-       設定画面
-       --------------------------------------------- */
+    /*
+     * 設定欄
+     */
 
     document.getElementById(
       'budgetInput'
@@ -2162,9 +2051,11 @@
   }
 
 
-  /* ==================================================
-     動的イベント
-     ================================================== */
+  /*
+   * ==============================
+   * 動的ボタン
+   * ==============================
+   */
 
   function bindDynamicHandlers(){
 
@@ -2172,28 +2063,33 @@
       .querySelectorAll('[data-del]')
       .forEach(btn => {
 
-        btn.onclick = async () => {
+        btn.onclick =
+          async () => {
 
-          const id =
-            btn.getAttribute(
-              'data-del'
-            );
-
-
-          state.transactions =
-
-            state.transactions.filter(
-              t =>
-                String(t.id) !== id
-            );
+            const id =
+              btn.getAttribute(
+                'data-del'
+              );
 
 
-          await saveTransactions();
+            state.transactions =
+              state.transactions.filter(
+                t =>
+                  String(t.id) !== id
+              );
 
 
-          render();
+            const ok =
+              await saveTransactions();
 
-        };
+
+            if(ok){
+
+              render();
+
+            }
+
+          };
 
       });
 
@@ -2202,23 +2098,26 @@
       .querySelectorAll('[data-toggle]')
       .forEach(btn => {
 
-        btn.onclick = () => {
+        btn.onclick =
+          () => {
 
-          btn
-            .closest('.history-day')
-            .classList
-            .toggle('open');
+            btn
+              .closest('.history-day')
+              .classList
+              .toggle('open');
 
-        };
+          };
 
       });
 
   }
 
 
-  /* ==================================================
-     タブ移動
-     ================================================== */
+  /*
+   * ==============================
+   * タブ
+   * ==============================
+   */
 
   function goToTab(name){
 
@@ -2239,21 +2138,18 @@
       .forEach(b => {
 
         b.classList.toggle(
-
           'active',
-
           b.getAttribute(
             'data-tab'
           ) === name
-
         );
 
       });
 
 
-    document.querySelector(
-      'main'
-    ).scrollTop = 0;
+    document
+      .querySelector('main')
+      .scrollTop = 0;
 
 
     document.getElementById(
@@ -2309,9 +2205,11 @@
     );
 
 
-  /* ==================================================
-     入力フォーム
-     ================================================== */
+  /*
+   * ==============================
+   * 入力
+   * ==============================
+   */
 
   document.getElementById(
     'entryDate'
@@ -2326,10 +2224,7 @@
     e => {
 
       const btn =
-        e.target.closest(
-          'button'
-        );
-
+        e.target.closest('button');
 
       if(!btn) return;
 
@@ -2344,13 +2239,14 @@
         .querySelectorAll(
           '#typeToggle button'
         )
-        .forEach(
-          b =>
-            b.classList.toggle(
-              'active',
-              b === btn
-            )
-        );
+        .forEach(b => {
+
+          b.classList.toggle(
+            'active',
+            b === btn
+          );
+
+        });
 
     }
   );
@@ -2363,10 +2259,7 @@
     e => {
 
       const btn =
-        e.target.closest(
-          'button'
-        );
-
+        e.target.closest('button');
 
       if(!btn) return;
 
@@ -2381,17 +2274,24 @@
         .querySelectorAll(
           '#acctSelect .acct-btn'
         )
-        .forEach(
-          b =>
-            b.classList.toggle(
-              'active',
-              b === btn
-            )
-        );
+        .forEach(b => {
+
+          b.classList.toggle(
+            'active',
+            b === btn
+          );
+
+        });
 
     }
   );
 
+
+  /*
+   * ==============================
+   * 支出・収入登録
+   * ==============================
+   */
 
   document.getElementById(
     'entryForm'
@@ -2423,8 +2323,14 @@
         ).value.trim();
 
 
-      if(!amount || amount <= 0)
+      if(
+        !amount ||
+        amount <= 0
+      ){
+
         return;
+
+      }
 
 
       state.transactions.push({
@@ -2451,12 +2357,24 @@
       });
 
 
-      const saved =
+      const ok =
         await saveTransactions();
 
 
-      if(!saved)
+      if(!ok){
+
+        /*
+         * 保存失敗時は追加した記録を
+         * ローカル状態から戻す
+         */
+
+        state.transactions.pop();
+
+        render();
+
         return;
+
+      }
 
 
       document.getElementById(
@@ -2482,26 +2400,32 @@
         '記録しました';
 
 
-      setTimeout(() => {
+      setTimeout(
+        () => {
 
-        if(
-          flash.textContent ===
-          '記録しました'
-        ){
+          if(
+            flash.textContent ===
+            '記録しました'
+          ){
 
-          flash.textContent = '';
+            flash.textContent =
+              '';
 
-        }
+          }
 
-      },1600);
+        },
+        1600
+      );
 
     }
   );
 
 
-  /* ==================================================
-     設定
-     ================================================== */
+  /*
+   * ==============================
+   * 設定
+   * ==============================
+   */
 
   document.getElementById(
     'budgetEditToggle'
@@ -2509,7 +2433,9 @@
     'click',
     () => {
 
-      goToTab('settings');
+      goToTab(
+        'settings'
+      );
 
       document.getElementById(
         'budgetInput'
@@ -2526,7 +2452,6 @@
     async () => {
 
       state.settings.dailyBudget =
-
         Number(
           document.getElementById(
             'budgetInput'
@@ -2534,11 +2459,11 @@
         ) || 0;
 
 
-      const saved =
+      const ok =
         await saveSettings();
 
 
-      if(saved){
+      if(ok){
 
         flashNote(
           '目標額を保存しました'
@@ -2591,11 +2516,11 @@
       };
 
 
-      const saved =
+      const ok =
         await saveAccounts();
 
 
-      if(saved){
+      if(ok){
 
         flashNote(
           '残高を保存しました'
@@ -2609,9 +2534,11 @@
   );
 
 
-  /* ==================================================
-     全データリセット
-     ================================================== */
+  /*
+   * ==============================
+   * 全リセット
+   * ==============================
+   */
 
   document.getElementById(
     'resetBtn'
@@ -2623,8 +2550,11 @@
         !confirm(
           'すべての記録・残高・設定を削除します。よろしいですか？'
         )
-      )
+      ){
+
         return;
+
+      }
 
 
       state = {
@@ -2647,17 +2577,17 @@
       };
 
 
-      const saved =
+      const ok =
         await saveAll();
 
 
-      if(saved){
-
-        flashNote(
-          'データをリセットしました'
-        );
+      if(ok){
 
         render();
+
+        flashNote(
+          'すべてリセットしました'
+        );
 
       }
 
@@ -2677,24 +2607,30 @@
       msg;
 
 
-    setTimeout(() => {
+    setTimeout(
+      () => {
 
-      if(
-        n.textContent === msg
-      ){
+        if(
+          n.textContent === msg
+        ){
 
-        n.textContent = '';
+          n.textContent =
+            '';
 
-      }
+        }
 
-    },2000);
+      },
+      2000
+    );
 
   }
 
 
-  /* ==================================================
-     初回設定
-     ================================================== */
+  /*
+   * ==============================
+   * 初回設定
+   * ==============================
+   */
 
   document.getElementById(
     'obStart'
@@ -2743,21 +2679,27 @@
         );
 
 
-      if(b)
+      if(b){
+
         state.settings.dailyBudget =
           b;
+
+      }
 
 
       state.onboarded =
         true;
 
 
-      const saved =
+      const ok =
         await saveAll();
 
 
-      if(!saved)
+      if(!ok){
+
         return;
+
+      }
 
 
       document.getElementById(
@@ -2783,12 +2725,15 @@
         true;
 
 
-      const saved =
-        await saveAll();
+      const ok =
+        await saveOnboarded();
 
 
-      if(!saved)
+      if(!ok){
+
         return;
+
+      }
 
 
       document.getElementById(
@@ -2804,9 +2749,11 @@
   );
 
 
-  /* ==================================================
-     起動
-     ================================================== */
+  /*
+   * ==============================
+   * 起動
+   * ==============================
+   */
 
   (async function init(){
 
@@ -2826,28 +2773,10 @@
 
     render();
 
-
-    /*
-      初回表示後、
-      Supabaseから最新データを
-      再取得して画面を更新
-    */
-
-    setTimeout(
-      async () => {
-
-        await loadAll();
-
-        render();
-
-      },
-      1000
-    );
-
   })();
 
-})();
 
+})();
 </script>
 
 </body>
